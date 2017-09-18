@@ -149,8 +149,6 @@ int main(int argc, char *argv[]){
 	Inicializa();
 	
 	glutMainLoop();
-	
-	
 	return 0;
 }
 
