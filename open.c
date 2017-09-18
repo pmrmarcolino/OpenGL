@@ -1,10 +1,9 @@
-
 #include <GL/glut.h> // Responsavel por gerenciamento de janelas e tratamento de eventos
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 
-#define tam 10
+#define tam 5
 
 typedef struct ponto{
 	float x;
@@ -53,7 +52,6 @@ Quadrado** alocaMat(Quadrado *quad , Quadrado **Mat){
 			//printf("%f %f ", Mat[l][c].ponto[0].x, Mat[l][c].ponto[0].y);				
 		}
 	}
-	
 	return Mat;
 }
 
@@ -62,46 +60,57 @@ Quadrado ** preencheMat(Quadrado **M, Pontos *p){
 
 		for(int l = 0; l<tam; l++){
 			for(int c = 0; c< tam; c++){
-					M[l][c].ponto[0].x *= (dist*l);
-					M[l][c].ponto[0].y *= (dist*l);
-					printf("%f %f \t", M[l][c].ponto[0].x, M[l][c].ponto[0].y);				
+				printf("%d quadrado\n\n",l+c);
+				
+					M[l][c].ponto[0].x += (dist*l);
+					M[l][c].ponto[0].y += (dist*l);
+					printf("1:%f %f \t", M[l][c].ponto[0].x, M[l][c].ponto[0].y);				
 					
-					M[l][c].ponto[1].x *= (dist*l);
-					M[l][c].ponto[1].y *= (dist*l);
-					printf("%f %f\t", M[l][c].ponto[1].x, M[l][c].ponto[1].y);				
+					M[l][c].ponto[1].x += (dist*l);
+					M[l][c].ponto[1].y += (dist*l);
+					printf("2:%f %f\t", M[l][c].ponto[1].x, M[l][c].ponto[1].y);				
 					
-					M[l][c].ponto[2].x *= (dist*1);
-					M[l][c].ponto[2].y *= (dist*1);
-					printf("%f %f\t", M[l][c].ponto[2].x, M[l][c].ponto[2].y);				
+					M[l][c].ponto[2].x += (dist*c);
+					M[l][c].ponto[2].y += (dist*c);
+					printf("3:%f %f\t", M[l][c].ponto[2].x, M[l][c].ponto[2].y);				
 					
-					M[l][c].ponto[3].x *= (dist*1);
-					M[l][c].ponto[3].y *= (dist*1);
-					printf("%f %f\n", M[l][c].ponto[3].x, M[l][c].ponto[3].y);						
+					M[l][c].ponto[3].x += (dist*c);
+					M[l][c].ponto[3].y += (dist*c);
+					printf("4:%f %f\n", M[l][c].ponto[3].x, M[l][c].ponto[3].y);						
 			}
 		}
 	return M;
 }
 
-void Desenha(void){
-	//glClearColor(1,1,1,0);
-	//glClear(GL_COLOR_BUFFER_BIT);	
+void Desenha(void){	
 	 
 	 Pontos *p;
 	 Quadrado *quad;
 	 Quadrado **Mat;
 	 
 	 quad = InitQuad(p);
-	//printf("%f %f", quad->ponto[0].x, quad->ponto[0].y);
 	 
 	 Mat = alocaMat(quad,Mat);
 	 //printf("%f", dist);
 	 
 	 
 	 Mat = preencheMat(Mat,p);
-	  
-	//glBegin(GL_QUADS);
-//	glFlush(); //  força as execuções do GL em um tempo finito pra um buffer
-//	glutSwapBuffers(); // pra mais de um buffer
+
+	glClearColor(1,1,1,0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1,0,0);
+	glBegin(GL_QUAD_STRIP);
+		for (int i = 0; i<tam; i++){
+			for(int j =0; j<tam;j++ ){
+				glVertex2f(Mat[i][j].ponto[0].x, Mat[i][j].ponto[0].y);
+				glVertex2f(Mat[i][j].ponto[1].x, Mat[i][j].ponto[1].y);
+				glVertex2f(Mat[i][j].ponto[2].x, Mat[i][j].ponto[2].y);
+				glVertex2f(Mat[i][j].ponto[3].x, Mat[i][j].ponto[3].y);
+			}
+		}
+	glEnd();
+	glFlush(); //  força as execuções do GL em um tempo finito pra um buffer
+	glutSwapBuffers(); // pra mais de um buffer
 }
 
 void Teclado (unsigned char key, int x, int y){
@@ -110,18 +119,6 @@ void Teclado (unsigned char key, int x, int y){
 		case 27 :
 			exit(0);
 			break;
-			
-		case 'a':
-			glutFullScreen();
-			break;
-		case 'A':
-			glutReshapeWindow(x,y);	
-		
-		case 'w':
-			glColor3f(1,1,1);
-			glPushAttrib(GL_CURRENT_BIT);
-			//glPopAttrib();
-			break;		
 	}
 	
 }
@@ -134,25 +131,25 @@ void Inicializa(void){
 
 void Tela(void){
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(600,600);
+	glutInitWindowSize(1200,600);
 	glutCreateWindow("Primeiro Programa");
 }
 
 int main(int argc, char *argv[]){
 	
-	//glutInit(&argc,argv);
-	//glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	
-	//Tela();
+	Tela();
 	
-	//glutDisplayFunc(Desenha);
+	glutDisplayFunc(Desenha);
 	
-	//glutKeyboardFunc(Teclado);
+	glutKeyboardFunc(Teclado);
 
-	//Inicializa();
+	Inicializa();
 	
-	//glutMainLoop();
-	Desenha();
+	glutMainLoop();
+	
 	
 	return 0;
 }
