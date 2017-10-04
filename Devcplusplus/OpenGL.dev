@@ -2,7 +2,7 @@
 FileName=OpenGL.dev
 Name=OpenGL
 Type=1
-Ver=1
+Ver=2
 ObjFiles=
 Includes=
 Libs=
@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker="../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_"../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_
+Linker="../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglu32.a"_@@_"../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libglut32.a"_@@_"../../../../../../../Program Files (x86)/Dev-Cpp/MinGW32/lib/libopengl32.a"_@@_
 IsCpp=1
 Icon=
 ExeOutput=

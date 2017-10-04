@@ -2,6 +2,7 @@
 
 #define linha 6
 #define coluna 5
+GLfloat angle, deslocamentoX, deslocamentoY, deslocamentoZ, fAspect;
 
 Triangulo** alocaMat(Triangulo **Mat){
    Mat = (Triangulo **) malloc (linha * sizeof (Triangulo*));
@@ -44,6 +45,27 @@ void imprimeMat (Triangulo ** Mat){
 	
 }
 
+/*void Anima(int value){
+	if(++angulo > 360.f){
+		angulo = 0.0f;
+	}
+	glutPostRedisplay();
+	glutTimerFunc(60,Anima,1);
+}*/
+
+void GerenciaMouse(int button, int state, int x, int y){
+	if (button == GLUT_LEFT_BUTTON)
+		if(state == GLUT_DOWN)
+			if (angle >= 10 ) angle-=5;
+	if (button == GLUT_RIGHT_BUTTON)
+		if(state == GLUT_DOWN)
+			if(angle <= 130) angle +=5;
+			
+	Inicializa();
+	glutPostRedisplay();
+}
+
+
 void Desenha(void){	
 	 Triangulo ** Mat;
 		 
@@ -55,12 +77,18 @@ void Desenha(void){
 		
 	 glClearColor(1,1,1,0);
 	 glClear(GL_COLOR_BUFFER_BIT);
-	 glColor3f(1,0,0);
-	 
-	 glutWireCube(50);
+	 glPushAttrib(GL_ALL_ATTRIB_BITS);
+	 glEnable(GL_POLYGON_OFFSET_FILL); // para poder alterar o tipo de linha
+	 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	 //glutWireCube(50);
 	
+	
+	glLineWidth(10);
+	//glRotatef(angulo,0,1,0);
+
 	for (int i = 0; i< linha; i++){
-		glBegin(GL_QUADS);
+		glColor3f(0,0,0);
+		glBegin(GL_QUADS);	
 			glNormal3f(Mat[i][0].ponto->x, Mat[i][0].ponto->y,Mat[i][0].ponto->z);	// Normal da face
 			glVertex3f(Mat[i][1].ponto->x, Mat[i][1].ponto->y,Mat[i][1].ponto->z);
 			glVertex3f(Mat[i][2].ponto->x, Mat[i][2].ponto->y,Mat[i][2].ponto->z);
@@ -68,11 +96,14 @@ void Desenha(void){
 			glVertex3f(Mat[i][4].ponto->x, Mat[i][4].ponto->y,Mat[i][4].ponto->z);
 		glEnd();
 	}
-		
+
 	
+	glPopAttrib();
 	glFlush(); //  força as execuções do GL em um tempo finito pra um buffer
 	glutSwapBuffers(); // pra mais de um buffer
 }
+
+
 
 void Teclado (unsigned char key, int x, int y){
 		
@@ -84,16 +115,50 @@ void Teclado (unsigned char key, int x, int y){
 }
 
 void Inicializa(void){
-	
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
  
+ 
+  gluPerspective(angle,fAspect,0.5,500);
   glOrtho(-65.0,65.0,-65.0,65.0,-400.0,400.0);
+  //gluPerspective(60,fAspect,0.5,500); n funfou
   
   glMatrixMode(GL_MODELVIEW);
   
   glLoadIdentity();
-  gluLookAt(40,60,100,0,0,0,0,1,0);
+  gluLookAt(50,60,150,0,0,0,0,1,0);
+	
+  //gluLookAt(0+deslocamentoX,0+deslocamentoY,150+deslocamentoZ,0+deslocamentoX,0+deslocamentoY,0+deslocamentoZ,0,1,0);
+
+
+}
+
+void TeclasEspeciais(unsigned char key, int x, int y){
+
+	switch(key){
+	
+		case GLUT_KEY_UP:
+			deslocamentoY -= 2;
+			break;
+		case GLUT_KEY_DOWN:
+			deslocamentoX += 2;
+			break;
+		case GLUT_KEY_LEFT:
+			deslocamentoX +=2;
+			break;
+		case GLUT_KEY_RIGHT:
+			deslocamentoX -=2;
+			break;
+		case GLUT_KEY_PAGE_UP:
+			deslocamentoZ -=2;
+			break;
+		case GLUT_KEY_PAGE_DOWN:
+			deslocamentoZ +=2;
+			break;
+	}
+	Inicializa();
+	glutPostRedisplay();
 }
 
 void Tela(void){
