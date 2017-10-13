@@ -10,8 +10,9 @@ typedef struct ponto{
 	float z;
 }Pontos;
 
-typedef struct quad{
+typedef struct triangulo{
 	Pontos *ponto;
+	float ctElastica;
 }Triangulo;
 
 Triangulo** alocaMat( Triangulo **Mat);

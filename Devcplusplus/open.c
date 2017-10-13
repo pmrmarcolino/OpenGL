@@ -1,7 +1,9 @@
 #include "open.h"
 
-#define linha 6
-#define coluna 5
+#define linha 12
+#define coluna 4
+#define ctElastica 10
+
 GLfloat angle, deslocamentoX, deslocamentoY, deslocamentoZ, fAspect;
 
 Triangulo** alocaMat(Triangulo **Mat){
@@ -23,7 +25,8 @@ Triangulo ** preencheMat(Triangulo **M){
 	arq = fopen("test.txt", "r");
 	
 	if (arq == NULL){
-            printf("nao abriu");
+            printf("O arquivo nao abriu");
+            return NULL;
     }
 	else{
     		for(int l = 0; l < linha; l++){		
@@ -72,6 +75,8 @@ void Desenha(void){
 	 Mat = alocaMat(Mat);
 	 	 
 	 Mat = preencheMat(Mat);
+	 
+	 if (Mat == NULL) return;
 
 	imprimeMat(Mat);
 		
@@ -88,12 +93,11 @@ void Desenha(void){
 
 	for (int i = 0; i< linha; i++){
 		glColor3f(0,0,0);
-		glBegin(GL_QUADS);	
+		glBegin(GL_TRIANGLES);	
 			glNormal3f(Mat[i][0].ponto->x, Mat[i][0].ponto->y,Mat[i][0].ponto->z);	// Normal da face
 			glVertex3f(Mat[i][1].ponto->x, Mat[i][1].ponto->y,Mat[i][1].ponto->z);
 			glVertex3f(Mat[i][2].ponto->x, Mat[i][2].ponto->y,Mat[i][2].ponto->z);
 			glVertex3f(Mat[i][3].ponto->x, Mat[i][3].ponto->y,Mat[i][3].ponto->z);
-			glVertex3f(Mat[i][4].ponto->x, Mat[i][4].ponto->y,Mat[i][4].ponto->z);
 		glEnd();
 	}
 
