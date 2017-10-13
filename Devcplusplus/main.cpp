@@ -9,9 +9,13 @@ int main(int argc, char *argv[]){
 	
 	glutDisplayFunc(Desenha);
 	
+	glutKeyboardFunc(Teclado);
+	
 	glutKeyboardFunc(TeclasEspeciais);
 	
-	//glutMouseFunc(GerenciaMouse);
+	glutMouseFunc(GerenciaMouse);
+	
+	glutMouseFunc(GerenciaMovim);
 
 	Inicializa();
 	

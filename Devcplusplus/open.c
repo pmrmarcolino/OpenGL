@@ -3,6 +3,9 @@
 #define linha 12
 #define coluna 4
 #define ctElastica 10
+#define SENS_ROT 5.0
+#define SENS_OBS 15.0
+#define SENS_TRANSL 30.0
 
 GLfloat angle, deslocamentoX, deslocamentoY, deslocamentoZ, fAspect;
 
@@ -48,24 +51,45 @@ void imprimeMat (Triangulo ** Mat){
 	
 }
 
-/*void Anima(int value){
-	if(++angulo > 360.f){
-		angulo = 0.0f;
-	}
-	glutPostRedisplay();
-	glutTimerFunc(60,Anima,1);
-}*/
 
 void GerenciaMouse(int button, int state, int x, int y){
-	if (button == GLUT_LEFT_BUTTON)
-		if(state == GLUT_DOWN)
-			if (angle >= 10 ) angle-=5;
-	if (button == GLUT_RIGHT_BUTTON)
-		if(state == GLUT_DOWN)
-			if(angle <= 130) angle +=5;
-			
-	Inicializa();
-	glutPostRedisplay();
+	if (state == GLUT_DOWN)
+	{
+		x_ini = x;
+		y_ini = y;
+		obsX_ini = obsX;
+		obsY_ini = obsY;
+		obsZ_ini = obsZ;
+		rotX_ini = rotX;
+		rotY_ini = rotY;
+		bot = button;	
+	}
+	else bot = -1;
+}
+
+void GerenciaMovim(int bot,int state, int x, int y){
+	
+	if(bot == GLUT_LEFT_BUTTON){
+		int deltax = x_ini - x;
+		int deltay = y_ini - y;
+		
+		rotY = rotY_ini - deltax/SENS_ROT;
+		rotX = rotX_ini - deltay/SENS_ROT;
+	}
+	else if (bot == GLUT_RIGHT_BUTTON){
+		int deltaz = y_ini - y;
+		obsZ = obsZ_ini + deltaz/SENS_OBS;
+	}
+	else if (bot == GLUT_MIDDLE_BUTTON){
+		int deltax = x_ini - x;
+		int deltay = y_ini - y;
+		
+		obsX = obsX_ini + deltax/SENS_TRANSL;
+		obsY = obsY_ini + deltay/SENS_TRANSL;
+	}
+	
+	PosicionaObservador();
+	gluPostDedisplay();
 }
 
 
@@ -78,7 +102,7 @@ void Desenha(void){
 	 
 	 if (Mat == NULL) return;
 
-	imprimeMat(Mat);
+	 imprimeMat(Mat);
 		
 	 glClearColor(1,1,1,0);
 	 glClear(GL_COLOR_BUFFER_BIT);
@@ -100,7 +124,6 @@ void Desenha(void){
 			glVertex3f(Mat[i][3].ponto->x, Mat[i][3].ponto->y,Mat[i][3].ponto->z);
 		glEnd();
 	}
-
 	
 	glPopAttrib();
 	glFlush(); //  força as execuções do GL em um tempo finito pra um buffer
@@ -118,6 +141,18 @@ void Teclado (unsigned char key, int x, int y){
 	}
 }
 
+void TeclasEspeciais(unsigned char tecla, int x, int y){
+	switch(tecla){
+		case GLUT_KEY_HOME: if(angle> = 10) angle -=5;
+							break;
+		case GLUT_KEY_END: if(angle> = 150) angle +=5;
+							break;
+	}
+	
+	EspecificaParametrosVisualizacao();
+	glutPostRedisplay();
+}
+
 void Inicializa(void){
 
   glMatrixMode(GL_PROJECTION);
@@ -126,7 +161,7 @@ void Inicializa(void){
  
   gluPerspective(angle,fAspect,0.5,500);
   glOrtho(-65.0,65.0,-65.0,65.0,-400.0,400.0);
-  //gluPerspective(60,fAspect,0.5,500); n funfou
+  gluPerspective(60,fAspect,0.5,500); //n funfou
   
   glMatrixMode(GL_MODELVIEW);
   
@@ -138,32 +173,23 @@ void Inicializa(void){
 
 }
 
-void TeclasEspeciais(unsigned char key, int x, int y){
-
-	switch(key){
+void PosicionaObservador(void){
 	
-		case GLUT_KEY_UP:
-			deslocamentoY -= 2;
-			break;
-		case GLUT_KEY_DOWN:
-			deslocamentoX += 2;
-			break;
-		case GLUT_KEY_LEFT:
-			deslocamentoX +=2;
-			break;
-		case GLUT_KEY_RIGHT:
-			deslocamentoX -=2;
-			break;
-		case GLUT_KEY_PAGE_UP:
-			deslocamentoZ -=2;
-			break;
-		case GLUT_KEY_PAGE_DOWN:
-			deslocamentoZ +=2;
-			break;
-	}
-	Inicializa();
-	glutPostRedisplay();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glTranslatef(-obsX,-obsY,-obsZ);
+	glRotatef(rotX,1,0,0);
+	glRotatef(rotY,0,1,0);
 }
+
+void EspecificaParametrosVisualizacao(void){
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(angle,fAspect,0.1,1200); //n funfou
+	
+	PosicionaObservador();
+}
+
 
 void Tela(void){
 	glutInitWindowPosition(100,100);
